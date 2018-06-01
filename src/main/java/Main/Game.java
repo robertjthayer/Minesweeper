@@ -43,19 +43,25 @@ public class Game {
         while (!isGameOver){
             printCurrentState();
             final int solversChosenSquare = solver.chooseSquare(playingField);
-            if (playingField.getSquareStatus(solversChosenSquare) == Status.UNKNOWN) {
-                playingField = playingField.makeMove(solversChosenSquare);
-                if (playingField.getSquareStatus(solversChosenSquare) == Status.MINE) {
-                    System.out.println("LOSE");
-                    break;
-                }
-                movesMade += 1 + revealSquaresAroundZeros(playingField.getSquare(solversChosenSquare), playingField);
+            if(solversChosenSquare >= 0 && solversChosenSquare < GameDims.SQUARE_COUNT) {
+                if (playingField.getSquareStatus(solversChosenSquare) == Status.UNKNOWN) {
+                    playingField = playingField.makeMove(solversChosenSquare);
+                    if (playingField.getSquareStatus(solversChosenSquare) == Status.MINE) {
+                        System.out.println("LOSE");
+                        break;
+                    }
+                    movesMade += 1 + revealSquaresAroundZeros(playingField.getSquare(solversChosenSquare), playingField);
 
-                if (movesMade == (GameDims.SQUARE_COUNT - GameDims.MINES_COUNT)) {
-                    long completionTime = (System.nanoTime() - this.startTime) / 1000000000;
-                    System.out.println("Game Completed in " + completionTime + " seconds");
-                    isGameOver = true;
+                    // Check win conditions
+                    if (movesMade == (GameDims.SQUARE_COUNT - GameDims.MINES_COUNT)) {
+                        long completionTime = (System.nanoTime() - this.startTime) / 1000000000;
+                        System.out.println("Game Completed in " + completionTime + " seconds");
+                        isGameOver = true;
+                    }
                 }
+            }
+            else {
+                System.out.println("Invalid square. Choose another");
             }
         }
     }

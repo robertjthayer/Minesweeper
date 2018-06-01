@@ -50,29 +50,36 @@ public class PlayingField {
         int[] newNearbyMines = new int[GameDims.SQUARE_COUNT];
 
         // Set up the mines. The first square chosen is not a possible mine location
-        // TODO: Change to a Set, there should be no repeating values. Should improve removing
-        ArrayList<Integer> possibleBombLocations = new ArrayList<>();
+        Set<Integer> possibleMineLocations = new HashSet<>();
         for (int i=0; i < GameDims.SQUARE_COUNT; i++) {
-            possibleBombLocations.add(new Integer(i));
+            possibleMineLocations.add(new Integer(i));
         }
-        possibleBombLocations.remove(firstMove);
-        if(GameDims.SQUARE_COUNT >= GameDims.MINES_COUNT + 9)
-        {
-            for (int neighbor : gameBoard[firstMove].getLegalNearbySquares()){
-                possibleBombLocations.removeIf(s -> s.equals(neighbor));
+        possibleMineLocations.remove(firstMove);
+        if(GameDims.SQUARE_COUNT >= GameDims.MINES_COUNT + 9) {
+            for (int neighbor : gameBoard[firstMove].getLegalNearbySquares()) {
+                possibleMineLocations.remove(neighbor);
             }
         }
         else{
-            // TODO: Address the case where there are so many mines that at least one surrounding square must be a mine
-            throw new RuntimeException("Fringe case, not accounted for yet");
+            List<Integer> nearbySquares = new LinkedList<>(gameBoard[firstMove].getLegalNearbySquares());
+            Collections.shuffle(nearbySquares);
+            for (int i = 0; i < GameDims.SQUARE_COUNT - GameDims.MINES_COUNT - 1 ; i++){
+                nearbySquares.remove(0);
+            }
+            for (int neighbor : nearbySquares) {
+                possibleMineLocations.remove(neighbor);
+            }
         }
 
-        Collections.shuffle(possibleBombLocations);
+        // Add possible bomb squares to a list for shuffling
+        List<Integer> possibleBombLocationsList = new LinkedList<>();
+        possibleBombLocationsList.addAll(possibleMineLocations);
+        Collections.shuffle(possibleBombLocationsList);
 
         // Set mines & nearby mine counts
         for (int i=0; i < GameDims.MINES_COUNT; i++) {
-            newMines[possibleBombLocations.get(i)] = true;
-            for (int neighbor : gameBoard[possibleBombLocations.get(i)].getLegalNearbySquares()){
+            newMines[possibleBombLocationsList.get(i)] = true;
+            for (int neighbor : gameBoard[possibleBombLocationsList.get(i)].getLegalNearbySquares()){
                 newNearbyMines[neighbor]++;
             }
         }
@@ -91,12 +98,13 @@ public class PlayingField {
     private void setSquare(final int squareID, final Square.Status status)
     {
         switch (status){
-            case SAFE : gameBoard[squareID] = new Square.SafeSquare(squareID, nearbyMineIndex[squareID]);
+            case SAFE :     gameBoard[squareID] = new Square.SafeSquare(squareID, nearbyMineIndex[squareID]);
                 break;
-            case MINE : gameBoard[squareID] = new Square.MineSquare(squareID);
+            case MINE :     gameBoard[squareID] = new Square.MineSquare(squareID);
                 break;
-            //TODO : Try making default an error and adding case UNKNOWN
-            default: gameBoard[squareID] = new Square.UnknownSquare(squareID);
+            case UNKNOWN:   gameBoard[squareID] = new Square.UnknownSquare(squareID);
+                break;
+            default: throw new RuntimeException("Square status initialization failed. Illegal status input");
         }
     }
 
