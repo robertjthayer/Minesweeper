@@ -19,7 +19,7 @@ public class Game {
         // Confirm legal board dimensions
         if (GameDims.SQUARE_COUNT > GameDims.MINES_COUNT && GameDims.MINES_COUNT > 0 &&
                 GameDims.ROW_COUNT > 0 && GameDims.COL_COUNT > 1)
-            this.playingField = playingField.initializeNewGame();
+            this.playingField = PlayingField.initializeNewGame();
         else {
             // TODO: Request new dimensions without terminating the program
             throw new RuntimeException("Illegal board conditions");

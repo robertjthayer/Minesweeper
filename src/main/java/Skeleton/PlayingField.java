@@ -9,9 +9,9 @@ public class PlayingField {
     private final int[] nearbyMineIndex;
 
     private PlayingField(Square[] gameBoard, boolean[] mineLocations, int[] nearbyMineIndex){
-        this.gameBoard = gameBoard;
-        this.mineLocations = mineLocations;
-        this.nearbyMineIndex = nearbyMineIndex;
+        this.gameBoard = Arrays.copyOf(gameBoard, gameBoard.length);
+        this.mineLocations = Arrays.copyOf(mineLocations, mineLocations.length);
+        this.nearbyMineIndex = Arrays.copyOf(nearbyMineIndex, nearbyMineIndex.length);
     }
 
     public static PlayingField initializeNewGame(){
@@ -52,7 +52,7 @@ public class PlayingField {
         // Set up the mines. The first square chosen is not a possible mine location
         Set<Integer> possibleMineLocations = new HashSet<>();
         for (int i=0; i < GameDims.SQUARE_COUNT; i++) {
-            possibleMineLocations.add(new Integer(i));
+            possibleMineLocations.add(i);
         }
         possibleMineLocations.remove(firstMove);
         if(GameDims.SQUARE_COUNT >= GameDims.MINES_COUNT + 9) {
