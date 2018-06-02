@@ -19,7 +19,7 @@ public class Game {
         // Confirm legal board dimensions
         if (GameDims.SQUARE_COUNT > GameDims.MINES_COUNT && GameDims.MINES_COUNT > 0 &&
                 GameDims.ROW_COUNT > 0 && GameDims.COL_COUNT > 1)
-            playingField = playingField.initializeNewGame();
+            this.playingField = playingField.initializeNewGame();
         else {
             // TODO: Request new dimensions without terminating the program
             throw new RuntimeException("Illegal board conditions");
@@ -29,7 +29,7 @@ public class Game {
 
     public void playGame(){
         boolean isGameOver = false;
-        final int firstMoveSquareID = this.solver.startingSquare(playingField);
+        final int firstMoveSquareID = this.solver.startingSquare(playingField.getGameBoard());
         int movesMade = 0;
 
         // First move made separately, mines aren't initialized until after first move is made
@@ -42,7 +42,7 @@ public class Game {
 
         while (!isGameOver){
             printCurrentState();
-            final int solversChosenSquare = solver.chooseSquare(playingField);
+            final int solversChosenSquare = solver.chooseSquare(playingField.getGameBoard());
             if(solversChosenSquare >= 0 && solversChosenSquare < GameDims.SQUARE_COUNT) {
                 if (playingField.getSquareStatus(solversChosenSquare) == Status.UNKNOWN) {
                     playingField = playingField.makeMove(solversChosenSquare);

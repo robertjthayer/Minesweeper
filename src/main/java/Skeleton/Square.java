@@ -21,7 +21,7 @@ abstract public class Square {
     }
 
     private List<Integer> computeLegalNearbySquares() {
-        List<Integer> legalSquares = new LinkedList<Integer>();
+        List<Integer> legalSquares = new LinkedList<>();
         for (final int currentOffset : CANDIDATE_NEARBY_OFFSET) {
             int candidateOffsetCoordinate = this.squareID + currentOffset;
 
@@ -120,9 +120,6 @@ abstract public class Square {
             return Status.SAFE;
         }
     }
-
-
-
 }
 
 

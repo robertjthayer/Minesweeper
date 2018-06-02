@@ -1,6 +1,6 @@
 package Main;
 
-import Solver.MannySolver;
+import Solver.*;
 /*
         Set game dimensions in GameDims Class
         Choose which solver to use in main class below

@@ -108,6 +108,10 @@ public class PlayingField {
         }
     }
 
+    public Square[] getGameBoard(){
+        return this.gameBoard;
+    }
+
     public void printSolution(){
         System.out.println("SOLUTION:");
         int gridTracker = 0;
